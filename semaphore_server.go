@@ -1,18 +1,7 @@
 package main
 
-import (
-	"github.com/gin-gonic/gin"
-	"net/http"
-)
+import "github.com/yoshikouki/semaphore-server/sever"
 
 func main()  {
-	r := gin.Default()
-	r.GET("/ping", pong)
-	r.Run()
-}
-
-func pong(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "pong",
-	})
+	server.LaunchServer()
 }
