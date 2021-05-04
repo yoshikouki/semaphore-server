@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-const testHost = "http://localhost:1323"
+const testHost = "http://localhost:8686"
 
 func TestServerConnection(t *testing.T) {
 	res, err := http.Get(testHost + "/ping")
