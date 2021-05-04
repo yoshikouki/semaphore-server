@@ -38,13 +38,7 @@ type server struct {
 func (s *server) Run() error {
 	e := echo.New()
 	e.GET("/ping", pong)
-	e.GET("/redis/ping", func(c echo.Context) error {
-		pong, err := s.redis.Ping(context.Background()).Result()
-		if err != nil {
-			return err
-		}
-		return c.String(http.StatusOK, pong)
-	})
+	e.GET("/redis/ping", s.redisPing)
 
 	port := fmt.Sprintf(":%d", s.config.Port)
 	if err := e.Start(port); err != nil {
@@ -56,4 +50,12 @@ func (s *server) Run() error {
 
 func pong(c echo.Context) error {
 	return c.String(http.StatusOK, "pong")
+}
+
+func (s *server) redisPing(c echo.Context) error {
+	pong, err := s.redis.Ping(context.Background()).Result()
+	if err != nil {
+		return err
+	}
+	return c.String(http.StatusOK, pong)
 }
