@@ -3,10 +3,15 @@ package main
 import (
 	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
 const testHost = "http://localhost:8686"
+
+func TestMain(m *testing.M) {
+	os.Exit(m.Run())
+}
 
 func TestServerConnection(t *testing.T) {
 	res, err := http.Get(testHost + "/ping")
