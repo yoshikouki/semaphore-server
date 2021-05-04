@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -13,8 +14,15 @@ func Launch() error {
 		return err
 	}
 
+	// run Redis
+	rdb, err := NewRedis(conf)
+	if err != nil {
+		return err
+	}
+
 	serv := &server{
 		config: conf,
+		redis: rdb,
 	}
 
 	return serv.Run()
@@ -22,6 +30,7 @@ func Launch() error {
 
 type server struct {
 	config Config
+	redis *redis.Client
 }
 
 // Run HTTP server
