@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
@@ -37,6 +38,13 @@ type server struct {
 func (s *server) Run() error {
 	e := echo.New()
 	e.GET("/ping", pong)
+	e.GET("/redis/ping", func(c echo.Context) error {
+		pong, err := s.redis.Ping(context.Background()).Result()
+		if err != nil {
+			return err
+		}
+		return c.String(http.StatusOK, pong)
+	})
 
 	port := fmt.Sprintf(":%d", s.config.Port)
 	if err := e.Start(port); err != nil {
