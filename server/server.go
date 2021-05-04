@@ -22,7 +22,7 @@ func Launch() error {
 
 	serv := &server{
 		config: conf,
-		redis: rdb,
+		redis:  rdb,
 	}
 
 	return serv.Run()
@@ -30,7 +30,7 @@ func Launch() error {
 
 type server struct {
 	config Config
-	redis *redis.Client
+	redis  *redis.Client
 }
 
 // Run HTTP server
@@ -38,7 +38,7 @@ func (s *server) Run() error {
 	e := echo.New()
 	e.GET("/ping", pong)
 
-	port:= fmt.Sprintf(":%d", s.config.Port)
+	port := fmt.Sprintf(":%d", s.config.Port)
 	if err := e.Start(port); err != nil {
 		e.Logger.Fatal(err)
 		return err

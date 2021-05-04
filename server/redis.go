@@ -11,9 +11,9 @@ type Redis struct {
 
 func NewRedis(conf Config) (*redis.Client, error) {
 	opt := redis.Options{
-		Addr: fmt.Sprintf("%s:%d", conf.RedisHost, conf.RedisPort),
+		Addr:     fmt.Sprintf("%s:%d", conf.RedisHost, conf.RedisPort),
 		Password: conf.RedisPassword,
-		DB: conf.RedisDB,
+		DB:       conf.RedisDB,
 	}
 
 	rdb := redis.NewClient(&opt)
