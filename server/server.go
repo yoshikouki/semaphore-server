@@ -49,7 +49,7 @@ func (s *server) Run() error {
 }
 
 func ping(c echo.Context) error {
-	return c.String(http.StatusOK, "ping")
+	return c.String(http.StatusOK, "pong")
 }
 
 func (s *server) redisPing(c echo.Context) error {
