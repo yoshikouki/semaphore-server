@@ -9,7 +9,7 @@ import (
 )
 
 func Launch() error {
-	// set config
+	// get config
 	conf, err := NewConfig()
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ type server struct {
 // Run HTTP server
 func (s *server) Run() error {
 	e := echo.New()
-	e.GET("/ping", pong)
+	e.GET("/ping", ping)
 	e.GET("/redis/ping", s.redisPing)
 
 	port := fmt.Sprintf(":%d", s.config.Port)
@@ -48,8 +48,8 @@ func (s *server) Run() error {
 	return nil
 }
 
-func pong(c echo.Context) error {
-	return c.String(http.StatusOK, "pong")
+func ping(c echo.Context) error {
+	return c.String(http.StatusOK, "ping")
 }
 
 func (s *server) redisPing(c echo.Context) error {
