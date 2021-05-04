@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func LaunchServer() error {
+func Launch() error {
 	router := gin.Default()
 	router.GET("/ping", pong)
 	return router.Run()
