@@ -6,8 +6,8 @@ import (
 )
 
 func DefineEndpoints(e *echo.Echo) {
-	e.GET("/ping", ping)
-	e.GET("/redis/ping", redisPing)
+	e.GET("/semaphore/ping", ping)
+	e.GET("/semaphore/redis/ping", redisPing)
 }
 
 func ping(c echo.Context) error {

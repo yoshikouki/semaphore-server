@@ -7,14 +7,14 @@ import (
 	"testing"
 )
 
-const testHost = "http://localhost:8686"
+const testURL = "http://localhost:8686"
 
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
 func TestServerConnection(t *testing.T) {
-	res, err := http.Get(testHost + "/ping")
+	res, err := http.Get(testURL + "/semaphore/ping")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,7 +36,7 @@ func TestServerConnection(t *testing.T) {
 }
 
 func TestRedisConnection(t *testing.T) {
-	res, err := http.Get(testHost + "/redis/ping")
+	res, err := http.Get(testURL + "/semaphore/redis/ping")
 	if err != nil {
 		t.Fatal(err)
 	}
