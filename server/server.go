@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
+	"github.com/yoshikouki/semaphore-server/api"
 	"net/http"
 )
 
@@ -26,7 +27,7 @@ func Launch() error {
 		redis:  rdb,
 	}
 
-	return serv.Run()
+	return serv.Run(conf)
 }
 
 type server struct {
@@ -35,21 +36,17 @@ type server struct {
 }
 
 // Run HTTP server
-func (s *server) Run() error {
+func (s *server) Run(conf Config) error {
 	e := echo.New()
-	e.GET("/ping", ping)
+	api.DefineEndpoints(e)
 	e.GET("/redis/ping", s.redisPing)
 
-	port := fmt.Sprintf(":%d", s.config.Port)
+	port := fmt.Sprintf(":%d", conf.Port)
 	if err := e.Start(port); err != nil {
 		e.Logger.Fatal(err)
 		return err
 	}
 	return nil
-}
-
-func ping(c echo.Context) error {
-	return c.String(http.StatusOK, "pong")
 }
 
 func (s *server) redisPing(c echo.Context) error {
