@@ -29,7 +29,7 @@ func (s *server) Run() error {
 	e := echo.New()
 	e.GET("/ping", ping)
 
-	port:= fmt.Sprintf(":%d", s.config.Port)
+	port := fmt.Sprintf(":%d", s.config.Port)
 	if err := e.Start(port); err != nil {
 		e.Logger.Fatal(err)
 		return err
