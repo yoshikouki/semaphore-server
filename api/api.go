@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func CreateEndpoints(e *echo.Echo) {
+func DefineEndpoints(e *echo.Echo) {
 	e.GET("/ping", ping)
 }
 
