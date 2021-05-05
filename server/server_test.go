@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_ping(t *testing.T) {
+func TestPing(t *testing.T) {
 	// Setup
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/ping", nil)
