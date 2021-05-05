@@ -17,7 +17,7 @@ func Launch() error {
 		config: conf,
 	}
 
-	return serv.Run()
+	return serv.Run(conf)
 }
 
 type server struct {
@@ -25,11 +25,11 @@ type server struct {
 }
 
 // Run HTTP server
-func (s *server) Run() error {
+func (s *server) Run(conf Config) error {
 	e := echo.New()
 	api.New(e)
 
-	port := fmt.Sprintf(":%d", s.config.Port)
+	port := fmt.Sprintf(":%d", conf.Port)
 	if err := e.Start(port); err != nil {
 		e.Logger.Fatal(err)
 		return err
