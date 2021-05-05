@@ -2,8 +2,10 @@ package server
 
 import (
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 	"github.com/yoshikouki/semaphore-server/api"
+	"github.com/yoshikouki/semaphore-server/middleware"
 )
 
 func Launch() error {
@@ -13,20 +15,25 @@ func Launch() error {
 		return err
 	}
 
-	serv := &server{
-		config: conf,
+	// run Redis
+	rdb, err := NewRedis(
+		conf.RedisHost,
+		conf.RedisPort,
+		conf.RedisPassword,
+		conf.RedisDB,
+	)
+	if err != nil {
+		return err
 	}
 
-	return serv.Run(conf)
-}
-
-type server struct {
-	config Config
+	return serverRun(conf, rdb)
 }
 
 // Run HTTP server
-func (s *server) Run(conf Config) error {
+func serverRun(conf Config, redis *redis.Client) error {
 	e := echo.New()
+	e.Use(middleware.Redis(redis))
+
 	api.DefineEndpoints(e)
 
 	port := fmt.Sprintf(":%d", conf.Port)
