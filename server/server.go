@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"net/http"
+	"github.com/yoshikouki/semaphore-server/api"
 )
 
 func Launch() error {
@@ -27,7 +27,7 @@ type server struct {
 // Run HTTP server
 func (s *server) Run() error {
 	e := echo.New()
-	e.GET("/ping", ping)
+	api.New(e)
 
 	port := fmt.Sprintf(":%d", s.config.Port)
 	if err := e.Start(port); err != nil {
@@ -35,8 +35,4 @@ func (s *server) Run() error {
 		return err
 	}
 	return nil
-}
-
-func ping(c echo.Context) error {
-	return c.String(http.StatusOK, "pong")
 }
