@@ -27,7 +27,7 @@ type server struct {
 // Run HTTP server
 func (s *server) Run(conf Config) error {
 	e := echo.New()
-	api.New(e)
+	api.CreateEndpoints(e)
 
 	port := fmt.Sprintf(":%d", conf.Port)
 	if err := e.Start(port); err != nil {
