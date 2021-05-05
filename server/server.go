@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/yoshikouki/semaphore-server/api"
 	"net/http"
+	"github.com/yoshikouki/semaphore-server/middleware"
 )
 
 func Launch() error {
@@ -38,6 +39,8 @@ type server struct {
 // Run HTTP server
 func (s *server) Run(conf Config) error {
 	e := echo.New()
+	e.Use(middleware.Redis(s.redis))
+
 	api.DefineEndpoints(e)
 	e.GET("/redis/ping", s.redisPing)
 
