@@ -26,21 +26,11 @@ func Launch() error {
 		return err
 	}
 
-	serv := &server{
-		config: conf,
-		redis:  rdb,
-	}
-
-	return serv.Run(conf, rdb)
-}
-
-type server struct {
-	config Config
-	redis  *redis.Client
+	return serverRun(conf, rdb)
 }
 
 // Run HTTP server
-func (s *server) Run(conf Config, redis *redis.Client) error {
+func serverRun(conf Config, redis *redis.Client) error {
 	e := echo.New()
 	e.Use(middleware.Redis(redis))
 
