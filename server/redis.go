@@ -5,13 +5,12 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-func NewRedis(conf Config) (*redis.Client, error) {
-	opt := redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", conf.RedisHost, conf.RedisPort),
-		Password: conf.RedisPassword,
-		DB:       conf.RedisDB,
-	}
+func NewRedis(host string, port int, password string, db int) (*redis.Client, error) {
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%d", host, port),
+		Password: password,
+		DB:       db,
+	})
 
-	rdb := redis.NewClient(&opt)
 	return rdb, nil
 }

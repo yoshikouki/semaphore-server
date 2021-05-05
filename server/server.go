@@ -16,7 +16,12 @@ func Launch() error {
 	}
 
 	// run Redis
-	rdb, err := NewRedis(conf)
+	rdb, err := NewRedis(
+		conf.RedisHost,
+		conf.RedisPort,
+		conf.RedisPassword,
+		conf.RedisDB,
+	)
 	if err != nil {
 		return err
 	}
@@ -26,7 +31,7 @@ func Launch() error {
 		redis:  rdb,
 	}
 
-	return serv.Run(conf)
+	return serv.Run(conf, rdb)
 }
 
 type server struct {
@@ -35,9 +40,9 @@ type server struct {
 }
 
 // Run HTTP server
-func (s *server) Run(conf Config) error {
+func (s *server) Run(conf Config, redis *redis.Client) error {
 	e := echo.New()
-	e.Use(middleware.Redis(s.redis))
+	e.Use(middleware.Redis(redis))
 
 	api.DefineEndpoints(e)
 
