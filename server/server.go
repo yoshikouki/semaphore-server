@@ -33,6 +33,7 @@ func Launch() error {
 func serverRun(conf Config, redis *redis.Client) error {
 	e := echo.New()
 	e.Use(middleware.Redis(redis))
+	e.Validator = middleware.NewCustomValidator()
 
 	api.DefineEndpoints(e)
 
