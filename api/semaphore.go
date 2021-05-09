@@ -11,9 +11,9 @@ type response struct {
 }
 
 type LockIfNotExistsParams struct {
-	LockTarget string `json:"lock_target"`
-	User       string `json:"user"`
-	TTL        string `json:"ttl"`
+	LockTarget string `json:"lock_target" validate:"required"`
+	User       string `json:"user" validate:"required"`
+	TTL        string `json:"ttl" validate:"required"`
 }
 
 // lockIfNotExists is Mutex what can only be used to maintain atomicity, if key don't exists.
@@ -21,6 +21,10 @@ type LockIfNotExistsParams struct {
 func lockIfNotExists(c echo.Context) error {
 	params := LockIfNotExistsParams{}
 	if err := c.Bind(&params); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	if err := c.Validate(params); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
