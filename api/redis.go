@@ -1,19 +1,19 @@
 package api
 
 import (
-	"context"
-	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 	"github.com/yoshikouki/semaphore-server/middleware"
+	"github.com/yoshikouki/semaphore-server/model"
 	"net/http"
 )
 
 func redisPing(c echo.Context) error {
-	rdb := c.Get(middleware.RedisKey).(*redis.Client)
+	m := c.Get(middleware.ModelKey).(model.Model)
 
-	pong, err := rdb.Ping(context.Background()).Result()
+	pong, err := m.RedisPing()
 	if err != nil {
 		return err
 	}
+
 	return c.String(http.StatusOK, pong)
 }
