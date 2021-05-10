@@ -2,10 +2,10 @@ package server
 
 import (
 	"fmt"
-	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 	"github.com/yoshikouki/semaphore-server/api"
 	"github.com/yoshikouki/semaphore-server/middleware"
+	"github.com/yoshikouki/semaphore-server/model"
 )
 
 func Launch() error {
@@ -26,13 +26,18 @@ func Launch() error {
 		return err
 	}
 
-	return serverRun(conf, rdb)
+	model, err := model.NewModel(rdb)
+	if err != nil {
+		return err
+	}
+
+	return serverRun(conf, model)
 }
 
 // Run HTTP server
-func serverRun(conf Config, redis *redis.Client) error {
+func serverRun(conf Config, model *model.Model) error {
 	e := echo.New()
-	e.Use(middleware.Redis(redis))
+	e.Use(middleware.Model(model))
 	e.Validator = middleware.NewCustomValidator()
 
 	api.DefineEndpoints(e)
