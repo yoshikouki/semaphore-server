@@ -6,12 +6,14 @@ import (
 )
 
 type Model struct {
-	redis *redis.Client
+	redis     *redis.Client
+	Semaphore Semaphore
 }
 
 func NewModel(rdb *redis.Client) (*Model, error) {
 	model := &Model{
-		redis: rdb,
+		redis:     rdb,
+		Semaphore: Semaphore{},
 	}
 
 	ctx := context.Background()
@@ -21,5 +23,5 @@ func NewModel(rdb *redis.Client) (*Model, error) {
 }
 
 func (m *Model) RedisPing() (string, error) {
-	return  m.redis.Ping(context.Background()).Result()
+	return m.redis.Ping(context.Background()).Result()
 }
