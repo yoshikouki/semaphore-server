@@ -5,6 +5,7 @@ import (
 	"github.com/yoshikouki/semaphore-server/middleware"
 	"github.com/yoshikouki/semaphore-server/model"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -16,12 +17,6 @@ type LockIfNotExistsParams struct {
 	LockTarget string `json:"lock_target" validate:"required"`
 	User       string `json:"user" validate:"required"`
 	TTL        string `json:"ttl" validate:"required"`
-}
-
-type LockIfNotExistsResponse struct {
-	isLocked   bool
-	user       string
-	expireDate time.Time
 }
 
 // lockIfNotExists is Mutex what can only be used to maintain atomicity, if key don't exists.
@@ -48,10 +43,10 @@ func lockIfNotExists(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
-	res := LockIfNotExistsResponse{
-		isLocked:   isLocked,
-		user:       user,
-		expireDate: expireDate,
+	res := map[string]string {
+		"isLocked":   strconv.FormatBool(isLocked),
+		"user":       user,
+		"expireDate": expireDate.Format("2006/01/02 15:04:05"),
 	}
 
 	return c.JSON(http.StatusOK, res)

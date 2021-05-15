@@ -8,7 +8,7 @@ import (
 )
 
 func redisPing(c echo.Context) error {
-	m := c.Get(middleware.ModelKey).(model.Model)
+	m := c.Get(middleware.ModelKey).(*model.Model)
 
 	pong, err := m.RedisPing()
 	if err != nil {
