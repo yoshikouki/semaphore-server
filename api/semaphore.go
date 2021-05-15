@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"github.com/labstack/echo/v4"
 	"github.com/yoshikouki/semaphore-server/middleware"
 	"github.com/yoshikouki/semaphore-server/model"
@@ -24,6 +25,7 @@ type LockIfNotExistsParams struct {
 func lockIfNotExists(c echo.Context) error {
 	params := LockIfNotExistsParams{}
 	m := c.Get(middleware.ModelKey).(*model.Model)
+	ctx := context.Background()
 
 	if err := c.Bind(&params); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -33,17 +35,17 @@ func lockIfNotExists(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	t, err := time.ParseDuration(params.TTL)
+	ttl, err := time.ParseDuration(params.TTL)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	isLocked, user, expireDate, err := m.Semaphore.SetIfNotExists(params.LockTarget, params.User, t)
+	isLocked, user, expireDate, err := m.LockIfNotExists(ctx, params.LockTarget, params.User, ttl)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
-	res := map[string]string {
+	res := map[string]string{
 		"isLocked":   strconv.FormatBool(isLocked),
 		"user":       user,
 		"expireDate": expireDate.Format("2006/01/02 15:04:05"),
