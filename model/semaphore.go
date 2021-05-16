@@ -2,6 +2,8 @@ package model
 
 import (
 	"context"
+	"fmt"
+	"github.com/go-redis/redis/v8"
 	"time"
 )
 
@@ -34,4 +36,24 @@ func (m *Model) LockIfNotExists(ctx context.Context, lockTarget, user string, tt
 	}
 
 	return true, user, expireDate, nil
+}
+
+func (m *Model) Unlock(ctx context.Context, target string, user string) (bool, string, error) {
+	lockedUser, err := m.redis.Get(ctx, target).Result()
+	if err == redis.Nil {
+		return false, fmt.Sprintf("%s haven't locked", target), nil
+	} else if err != nil {
+		return false, "", err
+	}
+
+	if user != lockedUser {
+		return false, fmt.Sprintf("%s don't release lock, because lock owner is %s", target, user), nil
+	}
+
+	_, err = m.redis.Del(ctx, target).Result()
+	if err != nil {
+		return false, "", err
+	}
+
+	return true, "", nil
 }
