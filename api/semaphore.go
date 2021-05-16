@@ -53,3 +53,33 @@ func lockIfNotExists(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, res)
 }
+
+type unlockParams struct {
+	unlockTarget string `json:"unlock_target" validate:"required"`
+	user string `json:"user" validate:"required"`
+}
+
+func unlock(c echo.Context) error {
+	params := &unlockParams{}
+	m := c.Get(middleware.ModelKey).(*model.Model)
+	ctx := context.Background()
+
+	if err := c.Bind(&params); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	if err := c.Validate(params); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	getUnlock, message, err := m.Unlock(ctx, params.unlockTarget, params.user)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	res := map[string]string{
+		"getUnlock": strconv.FormatBool(getUnlock),
+		"message": message,
+	}
+
+	return c.JSON(http.StatusOK, res)
+}
