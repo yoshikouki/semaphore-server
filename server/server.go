@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
+	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/yoshikouki/semaphore-server/api"
 	"github.com/yoshikouki/semaphore-server/middleware"
 	"github.com/yoshikouki/semaphore-server/model"
@@ -37,6 +38,7 @@ func Launch() error {
 // Run HTTP server
 func serverRun(conf Config, model *model.Model) error {
 	e := echo.New()
+	e.Use(echoMiddleware.Logger())
 	e.Use(middleware.Model(model))
 	e.Validator = middleware.NewCustomValidator()
 
