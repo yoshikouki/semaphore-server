@@ -55,8 +55,8 @@ func lockIfNotExists(c echo.Context) error {
 }
 
 type unlockParams struct {
-	unlockTarget string `json:"unlock_target" validate:"required"`
-	user         string `json:"user" validate:"required"`
+	UnlockTarget string `json:"unlock_target" validate:"required"`
+	User         string `json:"user" validate:"required"`
 }
 
 func unlock(c echo.Context) error {
@@ -71,7 +71,7 @@ func unlock(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	getUnlock, message, err := m.Unlock(ctx, params.unlockTarget, params.user)
+	getUnlock, message, err := m.Unlock(ctx, params.UnlockTarget, params.User)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
