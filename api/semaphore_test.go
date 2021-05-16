@@ -23,26 +23,6 @@ func Test_lockIfNotExists(t *testing.T) {
 			},
 		},
 		{
-			name:       "Invalid LockTarget",
-			wantErr:    false,
-			wantStatus: http.StatusBadRequest,
-			params: LockIfNotExistsParams{
-				LockTarget: "InvalidTarget",
-				User:       "testuser",
-				TTL:        "10s",
-			},
-		},
-		{
-			name:       "Invalid LockTarget",
-			wantErr:    false,
-			wantStatus: http.StatusBadRequest,
-			params: LockIfNotExistsParams{
-				LockTarget: "org-repo-stage",
-				User:       "Invalid User",
-				TTL:        "10s",
-			},
-		},
-		{
 			name:       "Invalid TTL",
 			wantErr:    false,
 			wantStatus: http.StatusBadRequest,

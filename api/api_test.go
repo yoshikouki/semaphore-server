@@ -32,13 +32,8 @@ func dummyContext(
 	req := httptest.NewRequest(reqType, reqPath, bytes.NewReader(rp))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
-
 	e := echo.New()
 	ctx := e.NewContext(req, rec)
-
-	// WIP: Create Stub
-	//b, _ := model.NewModelDummy()
-	//ctx.Set(middleware.ModelKey, b)
 
 	return ctx, rec
 }
