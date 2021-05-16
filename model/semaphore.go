@@ -16,12 +16,12 @@ type Semaphore struct {
 func (m *Model) LockIfNotExists(ctx context.Context, lockTarget, user string, ttl time.Duration) (bool, string, time.Time, error) {
 	isLocked, err := m.redis.SetNX(ctx, lockTarget, user, ttl).Result()
 	if err != nil {
-		return false, "", time.Now(), err
+		return false, "Error: redis.SetNX", time.Now(), err
 	}
 
 	remainingTTL, err := m.redis.TTL(ctx, lockTarget).Result()
 	if err != nil {
-		return false, "", time.Now(), err
+		return false, "Error: redis.TTL", time.Now(), err
 	}
 
 	expireDate := time.Now().Add(remainingTTL)
@@ -29,7 +29,7 @@ func (m *Model) LockIfNotExists(ctx context.Context, lockTarget, user string, tt
 	if !isLocked {
 		lockedUser, err := m.redis.Get(ctx, lockTarget).Result()
 		if err != nil {
-			return false, "", time.Now(), err
+			return false, "Error: redis.Get", time.Now(), err
 		}
 
 		return user == lockedUser, lockedUser, expireDate, err
@@ -43,7 +43,7 @@ func (m *Model) Unlock(ctx context.Context, target string, user string) (bool, s
 	if err == redis.Nil {
 		return false, fmt.Sprintf("%s haven't locked", target), nil
 	} else if err != nil {
-		return false, "", err
+		return false, "Error: redis.Get", err
 	}
 
 	if user != lockedUser {
@@ -52,7 +52,7 @@ func (m *Model) Unlock(ctx context.Context, target string, user string) (bool, s
 
 	_, err = m.redis.Del(ctx, target).Result()
 	if err != nil {
-		return false, "", err
+		return false, "Error: redis.Del", err
 	}
 
 	return true, "", nil
