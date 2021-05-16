@@ -40,13 +40,13 @@ func lockIfNotExists(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	isLocked, user, expireDate, err := m.LockIfNotExists(ctx, params.LockTarget, params.User, ttl)
+	getLocked, user, expireDate, err := m.LockIfNotExists(ctx, params.LockTarget, params.User, ttl)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
 	res := map[string]string{
-		"isLocked":   strconv.FormatBool(isLocked),
+		"getLocked":   strconv.FormatBool(getLocked),
 		"user":       user,
 		"expireDate": expireDate.Format("2006/01/02 15:04:05"),
 	}
