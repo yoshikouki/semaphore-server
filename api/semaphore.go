@@ -46,7 +46,7 @@ func lockIfNotExists(c echo.Context) error {
 	}
 
 	res := map[string]string{
-		"getLocked":   strconv.FormatBool(getLocked),
+		"getLocked":  strconv.FormatBool(getLocked),
 		"user":       user,
 		"expireDate": expireDate.Format("2006/01/02 15:04:05"),
 	}
@@ -56,7 +56,7 @@ func lockIfNotExists(c echo.Context) error {
 
 type unlockParams struct {
 	unlockTarget string `json:"unlock_target" validate:"required"`
-	user string `json:"user" validate:"required"`
+	user         string `json:"user" validate:"required"`
 }
 
 func unlock(c echo.Context) error {
@@ -78,7 +78,7 @@ func unlock(c echo.Context) error {
 
 	res := map[string]string{
 		"getUnlock": strconv.FormatBool(getUnlock),
-		"message": message,
+		"message":   message,
 	}
 
 	return c.JSON(http.StatusOK, res)
