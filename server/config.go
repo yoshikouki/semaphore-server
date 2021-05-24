@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/caarlos0/env/v6"
+	"github.com/imdario/mergo"
 )
 
 type Config struct {
@@ -13,10 +14,12 @@ type Config struct {
 	RedisDB       int    `env:"REDIS_DB" envDefault:"0"`
 }
 
-func NewConfig() (Config, error) {
-	var conf Config
-	if err := env.Parse(&conf); err != nil {
+func NewConfig(conf Config) (Config, error) {
+	var defaultConfig Config
+	if err := env.Parse(&defaultConfig); err != nil {
 		fmt.Errorf("NewConfig is Error: %+v\n", err)
 	}
+
+	mergo.Merge(&conf, defaultConfig)
 	return conf, nil
 }
