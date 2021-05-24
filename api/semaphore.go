@@ -20,6 +20,12 @@ type LockIfNotExistsParams struct {
 	TTL        string `json:"ttl" validate:"required"`
 }
 
+type LockIfNotExistsResponse struct {
+	GetLocked  string `json:"getLocked"`
+	User       string `json:"user"`
+	ExpireDate string `json:"expireDate"`
+}
+
 // lockIfNotExists is Mutex what can only be used to maintain atomicity, if key don't exists.
 // key: `org-repo-stage`
 func lockIfNotExists(c echo.Context) error {

@@ -1,6 +1,9 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
+	"github.com/yoshikouki/semaphore-server/api"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -54,5 +57,38 @@ func TestRedisConnection(t *testing.T) {
 	got := string(body)
 	if got != expected {
 		t.Errorf("Redis returned wrong body: got %s want %s", got, expected)
+	}
+}
+
+func TestLock(t *testing.T) {
+	client := &http.Client{}
+	data, _ := json.Marshal(map[string]string{
+		"lock_target": "org-repo-stage",
+		"user":        "test",
+		"ttl":         "1s",
+	})
+
+	req, err := http.NewRequest("POST", testURL+"/semaphore/lock", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	res, err := client.Do(req)
+	body, err := ioutil.ReadAll(res.Body)
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("/lock returned wrong status code: got %d want %d", res.StatusCode, http.StatusOK)
+	}
+
+	expected := api.LockIfNotExistsResponse{
+		GetLocked:  "true",
+		User:       "test",
+	}
+	var got api.LockIfNotExistsResponse
+	json.Unmarshal(body, &got)
+	if got.GetLocked != expected.GetLocked || got.User != expected.User {
+		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
 	}
 }
