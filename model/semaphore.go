@@ -47,7 +47,7 @@ func (m *Model) Unlock(ctx context.Context, target string, user string) (bool, s
 	}
 
 	if user != lockedUser {
-		return false, fmt.Sprintf("%s don't release lock, because lock owner is %s", target, user), nil
+		return false, fmt.Sprintf("%s don't release lock, because lock owner isn't %s", target, user), nil
 	}
 
 	_, err = m.redis.Del(ctx, target).Result()
