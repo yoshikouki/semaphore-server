@@ -85,12 +85,73 @@ func TestLock(t *testing.T) {
 	}
 }
 
+func TestLockAndLock(t *testing.T) {
+	lockRequest(t, defaultLockParams)
+	body := lockRequest(t, defaultLockParams)
+
+	expected := api.LockIfNotExistsResponse{
+		GetLocked: "true",
+		User:      "test",
+	}
+	var got api.LockIfNotExistsResponse
+	json.Unmarshal(body, &got)
+	if got.GetLocked != expected.GetLocked || got.User != expected.User {
+		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
+	}
+}
+
+func TestLockAndInvalidLock(t *testing.T) {
+	lockRequest(t, defaultLockParams)
+	defaultLockParams.User = "InvalidUser"
+	body := lockRequest(t, defaultLockParams)
+
+	expected := api.LockIfNotExistsResponse{
+		GetLocked: "false",
+		User:      "test",
+	}
+	var got api.LockIfNotExistsResponse
+	json.Unmarshal(body, &got)
+	if got.GetLocked != expected.GetLocked || got.User != expected.User {
+		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
+	}
+}
+
 func TestLockAndUnlock(t *testing.T) {
 	lockRequest(t, defaultLockParams)
 	unlockBody := unlockRequest(t, defaultUnlockParams)
 
 	expected := api.UnlockResponse{
 		GetUnlock: "true",
+		Message:   "",
+	}
+	var got api.UnlockResponse
+	json.Unmarshal(unlockBody, &got)
+	if got.GetUnlock != expected.GetUnlock || got.Message != expected.Message {
+		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
+	}
+}
+
+func TestInvalidUnlock(t *testing.T) {
+	unlockBody := unlockRequest(t, defaultUnlockParams)
+
+	expected := api.UnlockResponse{
+		GetUnlock: "false",
+		Message:   "org-repo-stage haven't locked",
+	}
+	var got api.UnlockResponse
+	json.Unmarshal(unlockBody, &got)
+	if got.GetUnlock != expected.GetUnlock || got.Message != expected.Message {
+		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
+	}
+}
+
+func TestLockAndInvalidUnlock(t *testing.T) {
+	lockRequest(t, defaultLockParams)
+	defaultUnlockParams.User = "InvalidUser"
+	unlockBody := unlockRequest(t, defaultUnlockParams)
+
+	expected := api.UnlockResponse{
+		GetUnlock: "false",
 		Message:   "",
 	}
 	var got api.UnlockResponse
