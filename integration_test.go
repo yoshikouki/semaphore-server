@@ -165,7 +165,7 @@ func lockRequest(t *testing.T, params *api.LockIfNotExistsParams) []byte {
 	client := &http.Client{}
 	data, _ := json.Marshal(params)
 
-	req, err := http.NewRequest("POST", testURL+"/semaphore/lock", bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", testURL+"/lock", bytes.NewBuffer(data))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -186,7 +186,7 @@ func unlockRequest(t *testing.T, params *api.UnlockParams) []byte {
 	client := &http.Client{}
 	data, _ := json.Marshal(params)
 
-	req, err := http.NewRequest("POST", testURL+"/semaphore/unlock", bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", testURL+"/unlock", bytes.NewBuffer(data))
 	if err != nil {
 		t.Fatal(err)
 	}
