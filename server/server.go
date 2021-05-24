@@ -8,9 +8,9 @@ import (
 	"github.com/yoshikouki/semaphore-server/middleware"
 )
 
-func Launch() error {
+func Launch(cfg Config) error {
 	// get config
-	conf, err := NewConfig()
+	conf, err := NewConfig(cfg)
 	if err != nil {
 		return err
 	}
