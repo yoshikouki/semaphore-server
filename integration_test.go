@@ -61,6 +61,20 @@ func TestRedisConnection(t *testing.T) {
 }
 
 func TestLock(t *testing.T) {
+	body := lockRequest(t)
+
+	expected := api.LockIfNotExistsResponse{
+		GetLocked:  "true",
+		User:       "test",
+	}
+	var got api.LockIfNotExistsResponse
+	json.Unmarshal(body, &got)
+	if got.GetLocked != expected.GetLocked || got.User != expected.User {
+		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
+	}
+}
+
+func lockRequest(t *testing.T) []byte {
 	client := &http.Client{}
 	data, _ := json.Marshal(map[string]string{
 		"lock_target": "org-repo-stage",
@@ -82,13 +96,5 @@ func TestLock(t *testing.T) {
 		t.Errorf("/lock returned wrong status code: got %d want %d", res.StatusCode, http.StatusOK)
 	}
 
-	expected := api.LockIfNotExistsResponse{
-		GetLocked:  "true",
-		User:       "test",
-	}
-	var got api.LockIfNotExistsResponse
-	json.Unmarshal(body, &got)
-	if got.GetLocked != expected.GetLocked || got.User != expected.User {
-		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
-	}
+	return body
 }
