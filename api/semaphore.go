@@ -65,6 +65,11 @@ type unlockParams struct {
 	User         string `json:"user" validate:"required"`
 }
 
+type UnlockResponse struct {
+	GetUnlock string `json:"getUnlock"`
+	Message   string `json:"message"`
+}
+
 func unlock(c echo.Context) error {
 	params := &unlockParams{}
 	m := c.Get(middleware.ModelKey).(*model.Model)

@@ -64,12 +64,27 @@ func TestLock(t *testing.T) {
 	body := lockRequest(t)
 
 	expected := api.LockIfNotExistsResponse{
-		GetLocked:  "true",
-		User:       "test",
+		GetLocked: "true",
+		User:      "test",
 	}
 	var got api.LockIfNotExistsResponse
 	json.Unmarshal(body, &got)
 	if got.GetLocked != expected.GetLocked || got.User != expected.User {
+		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
+	}
+}
+
+func TestLockAndUnlock(t *testing.T) {
+	lockRequest(t)
+	unlockBody := unlockRequest(t)
+
+	expected := api.UnlockResponse{
+		GetUnlock: "true",
+		Message:   "",
+	}
+	var got api.UnlockResponse
+	json.Unmarshal(unlockBody, &got)
+	if got.GetUnlock != expected.GetUnlock || got.Message != expected.Message {
 		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
 	}
 }
@@ -94,6 +109,30 @@ func lockRequest(t *testing.T) []byte {
 
 	if res.StatusCode != http.StatusOK {
 		t.Errorf("/lock returned wrong status code: got %d want %d", res.StatusCode, http.StatusOK)
+	}
+
+	return body
+}
+
+func unlockRequest(t *testing.T) []byte {
+	client := &http.Client{}
+	data, _ := json.Marshal(map[string]string{
+		"unlock_target": "org-repo-stage",
+		"user":          "test",
+	})
+
+	req, err := http.NewRequest("POST", testURL+"/semaphore/unlock", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	res, err := client.Do(req)
+	body, err := ioutil.ReadAll(res.Body)
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("/unlock returned wrong status code: got %d want %d", res.StatusCode, http.StatusOK)
 	}
 
 	return body
