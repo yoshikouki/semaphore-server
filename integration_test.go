@@ -10,14 +10,14 @@ import (
 	"testing"
 )
 
-const testURL = "http://localhost:8686"
+const testURL = "http://localhost:8686/semaphore"
 
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
 func TestServerConnection(t *testing.T) {
-	res, err := http.Get(testURL + "/semaphore/ping")
+	res, err := http.Get(testURL + "/ping")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -39,7 +39,7 @@ func TestServerConnection(t *testing.T) {
 }
 
 func TestRedisConnection(t *testing.T) {
-	res, err := http.Get(testURL + "/semaphore/redis/ping")
+	res, err := http.Get(testURL + "/redis/ping")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -60,19 +60,12 @@ func TestRedisConnection(t *testing.T) {
 	}
 }
 
-var defaultLockParams = &api.LockIfNotExistsParams{
-	LockTarget: "org-repo-stage",
-	User:       "test",
-	TTL:        "1s",
-}
-
-var defaultUnlockParams = &api.UnlockParams{
-	UnlockTarget: "org-repo-stage",
-	User:         "test",
-}
-
 func TestLock(t *testing.T) {
-	body := lockRequest(t, defaultLockParams)
+	body := lockRequest(t, &api.LockIfNotExistsParams{
+		LockTarget: "org-repo-stage",
+		User:       "test",
+		TTL:        "1s",
+	})
 
 	expected := api.LockIfNotExistsResponse{
 		GetLocked: "true",
@@ -86,8 +79,16 @@ func TestLock(t *testing.T) {
 }
 
 func TestLockAndLock(t *testing.T) {
-	lockRequest(t, defaultLockParams)
-	body := lockRequest(t, defaultLockParams)
+	lockRequest(t, &api.LockIfNotExistsParams{
+		LockTarget: "org-repo-stage",
+		User:       "test",
+		TTL:        "1s",
+	})
+	body := lockRequest(t, &api.LockIfNotExistsParams{
+		LockTarget: "org-repo-stage",
+		User:       "test",
+		TTL:        "1s",
+	})
 
 	expected := api.LockIfNotExistsResponse{
 		GetLocked: "true",
@@ -101,9 +102,16 @@ func TestLockAndLock(t *testing.T) {
 }
 
 func TestLockAndInvalidLock(t *testing.T) {
-	lockRequest(t, defaultLockParams)
-	defaultLockParams.User = "InvalidUser"
-	body := lockRequest(t, defaultLockParams)
+	lockRequest(t, &api.LockIfNotExistsParams{
+		LockTarget: "org-repo-stage",
+		User:       "test",
+		TTL:        "1s",
+	})
+	body := lockRequest(t, &api.LockIfNotExistsParams{
+		LockTarget: "org-repo-stage",
+		User:       "InvalidUser",
+		TTL:        "1s",
+	})
 
 	expected := api.LockIfNotExistsResponse{
 		GetLocked: "false",
@@ -117,8 +125,15 @@ func TestLockAndInvalidLock(t *testing.T) {
 }
 
 func TestLockAndUnlock(t *testing.T) {
-	lockRequest(t, defaultLockParams)
-	unlockBody := unlockRequest(t, defaultUnlockParams)
+	lockRequest(t, &api.LockIfNotExistsParams{
+		LockTarget: "org-repo-stage",
+		User:       "test",
+		TTL:        "1s",
+	})
+	unlockBody := unlockRequest(t, &api.UnlockParams{
+		UnlockTarget: "org-repo-stage",
+		User:         "test",
+	})
 
 	expected := api.UnlockResponse{
 		GetUnlock: "true",
@@ -132,7 +147,10 @@ func TestLockAndUnlock(t *testing.T) {
 }
 
 func TestInvalidUnlock(t *testing.T) {
-	unlockBody := unlockRequest(t, defaultUnlockParams)
+	unlockBody := unlockRequest(t, &api.UnlockParams{
+		UnlockTarget: "org-repo-stage",
+		User:         "test",
+	})
 
 	expected := api.UnlockResponse{
 		GetUnlock: "false",
@@ -146,13 +164,19 @@ func TestInvalidUnlock(t *testing.T) {
 }
 
 func TestLockAndInvalidUnlock(t *testing.T) {
-	lockRequest(t, defaultLockParams)
-	defaultUnlockParams.User = "InvalidUser"
-	unlockBody := unlockRequest(t, defaultUnlockParams)
+	lockRequest(t, &api.LockIfNotExistsParams{
+		LockTarget: "org-repo-stage",
+		User:       "test",
+		TTL:        "1s",
+	})
+	unlockBody := unlockRequest(t, &api.UnlockParams{
+		UnlockTarget: "org-repo-stage",
+		User:         "InvalidUser",
+	})
 
 	expected := api.UnlockResponse{
 		GetUnlock: "false",
-		Message:   "",
+		Message:   "org-repo-stage don't release lock, because lock owner isn't InvalidUser",
 	}
 	var got api.UnlockResponse
 	json.Unmarshal(unlockBody, &got)
