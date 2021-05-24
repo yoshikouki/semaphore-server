@@ -60,7 +60,7 @@ func lockIfNotExists(c echo.Context) error {
 	return c.JSON(http.StatusOK, res)
 }
 
-type unlockParams struct {
+type UnlockParams struct {
 	UnlockTarget string `json:"unlock_target" validate:"required"`
 	User         string `json:"user" validate:"required"`
 }
@@ -71,7 +71,7 @@ type UnlockResponse struct {
 }
 
 func unlock(c echo.Context) error {
-	params := &unlockParams{}
+	params := &UnlockParams{}
 	m := c.Get(middleware.ModelKey).(*model.Model)
 	ctx := context.Background()
 

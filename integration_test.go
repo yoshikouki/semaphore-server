@@ -60,8 +60,19 @@ func TestRedisConnection(t *testing.T) {
 	}
 }
 
+var defaultLockParams = &api.LockIfNotExistsParams{
+	LockTarget: "org-repo-stage",
+	User:       "test",
+	TTL:        "1s",
+}
+
+var defaultUnlockParams = &api.UnlockParams{
+	UnlockTarget: "org-repo-stage",
+	User:         "test",
+}
+
 func TestLock(t *testing.T) {
-	body := lockRequest(t)
+	body := lockRequest(t, defaultLockParams)
 
 	expected := api.LockIfNotExistsResponse{
 		GetLocked: "true",
@@ -75,8 +86,8 @@ func TestLock(t *testing.T) {
 }
 
 func TestLockAndUnlock(t *testing.T) {
-	lockRequest(t)
-	unlockBody := unlockRequest(t)
+	lockRequest(t, defaultLockParams)
+	unlockBody := unlockRequest(t, defaultUnlockParams)
 
 	expected := api.UnlockResponse{
 		GetUnlock: "true",
@@ -89,13 +100,9 @@ func TestLockAndUnlock(t *testing.T) {
 	}
 }
 
-func lockRequest(t *testing.T) []byte {
+func lockRequest(t *testing.T, params *api.LockIfNotExistsParams) []byte {
 	client := &http.Client{}
-	data, _ := json.Marshal(map[string]string{
-		"lock_target": "org-repo-stage",
-		"user":        "test",
-		"ttl":         "1s",
-	})
+	data, _ := json.Marshal(params)
 
 	req, err := http.NewRequest("POST", testURL+"/semaphore/lock", bytes.NewBuffer(data))
 	if err != nil {
@@ -114,12 +121,9 @@ func lockRequest(t *testing.T) []byte {
 	return body
 }
 
-func unlockRequest(t *testing.T) []byte {
+func unlockRequest(t *testing.T, params *api.UnlockParams) []byte {
 	client := &http.Client{}
-	data, _ := json.Marshal(map[string]string{
-		"unlock_target": "org-repo-stage",
-		"user":          "test",
-	})
+	data, _ := json.Marshal(params)
 
 	req, err := http.NewRequest("POST", testURL+"/semaphore/unlock", bytes.NewBuffer(data))
 	if err != nil {
