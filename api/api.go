@@ -6,10 +6,10 @@ import (
 )
 
 func DefineEndpoints(e *echo.Echo) {
-	e.GET("/semaphore/ping", ping)
-	e.GET("/semaphore/redis/ping", redisPing)
-	e.POST("/semaphore/lock", lockIfNotExists)
-	e.POST("/semaphore/unlock", unlock)
+	e.GET("/semapi/ping", ping)
+	e.GET("/semapi/redis/ping", redisPing)
+	e.POST("/semapi/lock", lockIfNotExists)
+	e.POST("/semapi/unlock", unlock)
 }
 
 func ping(c echo.Context) error {

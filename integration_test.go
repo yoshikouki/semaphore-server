@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-const testURL = "http://localhost:8686/semaphore"
+const testURL = "http://localhost:8686/semapi"
 
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())
