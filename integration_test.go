@@ -3,14 +3,14 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/yoshikouki/semaphore-server/api"
+	"github.com/yoshikouki/semapi/api"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
 )
 
-const testURL = "http://localhost:8686/semaphore"
+const testURL = "http://localhost:8686/semapi"
 
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())

@@ -1,12 +1,12 @@
-package server
+package semapi
 
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
-	"github.com/yoshikouki/semaphore-server/api"
-	"github.com/yoshikouki/semaphore-server/middleware"
-	"github.com/yoshikouki/semaphore-server/model"
+	"github.com/yoshikouki/semapi/api"
+	"github.com/yoshikouki/semapi/middleware"
+	"github.com/yoshikouki/semapi/model"
 )
 
 func Launch(cfg Config) error {

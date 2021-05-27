@@ -11,7 +11,7 @@ import (
 func Test_ping(t *testing.T) {
 	// Setup
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/semaphore/ping", nil)
+	req := httptest.NewRequest(http.MethodGet, "/semapi/ping", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 

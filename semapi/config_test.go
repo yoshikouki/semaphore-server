@@ -1,4 +1,4 @@
-package server
+package semapi
 
 import (
 	"reflect"
@@ -24,7 +24,7 @@ func Test_newConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewConfig()
+			got, err := NewConfig(Config{})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewConfig() error = %v, wantErr %v", err, tt.wantErr)
 				return
