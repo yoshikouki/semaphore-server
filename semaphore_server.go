@@ -1,9 +1,9 @@
 package main
 
-import "github.com/yoshikouki/semaphore-server/server"
+import "github.com/yoshikouki/semaphore-server/semapi"
 
 func main() {
-	err := server.Launch(server.Config{})
+	err := semapi.Launch(semapi.Config{})
 	if err != nil {
 		panic(err)
 	}

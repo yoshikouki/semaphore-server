@@ -1,4 +1,4 @@
-package server
+package semapi
 
 import (
 	"reflect"
