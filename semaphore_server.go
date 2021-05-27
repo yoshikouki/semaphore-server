@@ -1,6 +1,6 @@
 package main
 
-import "github.com/yoshikouki/semaphore-server/semapi"
+import "github.com/yoshikouki/semapi/semapi"
 
 func main() {
 	err := semapi.Launch(semapi.Config{})

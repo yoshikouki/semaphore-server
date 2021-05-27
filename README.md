@@ -8,7 +8,7 @@ This is Semaphore Management API.
 package main
 
 import (
-	"github.com/yoshikouki/semaphore-server/server"
+	"github.com/yoshikouki/semapi/server"
 )
 
 func main() {
@@ -33,4 +33,4 @@ $ curl -X POST localhost:8686/semaphore/unlock \
 {"getUnlock":"true","message":""}
 ```
 
-And more: https://github.com/yoshikouki/semaphore-server/blob/main/integration_test.go
+And more: https://github.com/yoshikouki/semapi/blob/main/integration_test.go

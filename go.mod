@@ -1,4 +1,4 @@
-module github.com/yoshikouki/semaphore-server
+module github.com/yoshikouki/semapi
 
 go 1.16
 

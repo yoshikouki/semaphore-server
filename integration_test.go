@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/yoshikouki/semaphore-server/api"
+	"github.com/yoshikouki/semapi/api"
 	"io/ioutil"
 	"net/http"
 	"os"

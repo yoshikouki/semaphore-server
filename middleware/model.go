@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/yoshikouki/semaphore-server/model"
+	"github.com/yoshikouki/semapi/model"
 )
 
 const ModelKey = "GetterModel"
