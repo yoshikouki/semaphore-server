@@ -22,6 +22,6 @@ func NewModel(rdb *redis.Client) (*Model, error) {
 	return model, err
 }
 
-func (m *Model) RedisPing() (string, error) {
-	return m.redis.Ping(context.Background()).Result()
+func (m *Model) RedisPing(ctx context.Context) (string, error) {
+	return m.redis.Ping(ctx).Result()
 }
