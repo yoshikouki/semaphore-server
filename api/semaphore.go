@@ -20,12 +20,6 @@ type LockParams struct {
 	TTL    string `json:"ttl" validate:"required"`
 }
 
-type LockResponse struct {
-	GetLocked  string `json:"getLocked"`
-	User       string `json:"user"`
-	ExpireDate string `json:"expireDate"`
-}
-
 // lock is Mutex what can only be used to maintain atomicity, if key don't exists.
 // key: `org-repo-stage`
 func lock(c echo.Context) error {
@@ -43,21 +37,15 @@ func lock(c echo.Context) error {
 
 	ttl, err := time.ParseDuration(params.TTL)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	err = m.Lock(ctx, params.Target, params.User, ttl)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	res := map[string]string{
-		"getLocked":  strconv.FormatBool(getLocked),
-		"user":       user,
-		"expireDate": expireDate.Format("2006/01/02 15:04:05"),
-	}
-
-	return c.JSON(http.StatusOK, res)
+	return c.String(http.StatusOK, "OK")
 }
 
 type UnlockParams struct {
