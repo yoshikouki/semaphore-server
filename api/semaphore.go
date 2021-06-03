@@ -14,7 +14,7 @@ type response struct {
 }
 
 type LockParams struct {
-	Target string `json:"lock_target" validate:"required"`
+	Target string `param:"target" validate:"required"`
 	User   string `json:"user" validate:"required"`
 	TTL    string `json:"ttl" validate:"required"`
 }
@@ -48,7 +48,7 @@ func lock(c echo.Context) error {
 }
 
 type UnlockParams struct {
-	Target string `json:"unlock_target" validate:"required"`
+	Target string `param:"target" validate:"required"`
 	User   string `json:"user" validate:"required"`
 }
 

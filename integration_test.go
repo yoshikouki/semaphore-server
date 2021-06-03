@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/yoshikouki/semapi/api"
 	"io/ioutil"
 	"net/http"
@@ -205,8 +206,9 @@ func TestLockAndInvalidUnlock(t *testing.T) {
 func lockRequest(t *testing.T, params *api.LockParams) (int, []byte) {
 	client := &http.Client{}
 	data, _ := json.Marshal(params)
+	url := fmt.Sprintf("%s/%s/lock", testURL, params.Target)
 
-	req, err := http.NewRequest("POST", testURL+"/lock", bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -222,8 +224,9 @@ func lockRequest(t *testing.T, params *api.LockParams) (int, []byte) {
 func unlockRequest(t *testing.T, params *api.UnlockParams) (int, []byte) {
 	client := &http.Client{}
 	data, _ := json.Marshal(params)
+	url := fmt.Sprintf("%s/%s/unlock", testURL, params.Target)
 
-	req, err := http.NewRequest("POST", testURL+"/unlock", bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -10,8 +10,8 @@ import (
 
 func DefineEndpoints(e *echo.Echo) {
 	e.GET("/semapi/health-check", healthCheck)
-	e.POST("/semapi/lock", lock)
-	e.POST("/semapi/unlock", unlock)
+	e.POST("/semapi/:target/lock", lock)
+	e.POST("/semapi/:target/unlock", unlock)
 }
 
 func healthCheck(c echo.Context) error {
