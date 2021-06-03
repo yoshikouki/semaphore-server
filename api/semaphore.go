@@ -46,7 +46,7 @@ func lock(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	getLocked, user, expireDate, err := m.Lock(ctx, params.Target, params.User, ttl)
+	err = m.Lock(ctx, params.Target, params.User, ttl)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}

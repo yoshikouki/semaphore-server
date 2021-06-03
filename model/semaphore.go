@@ -13,15 +13,15 @@ type Semaphore struct {
 	ttl  time.Duration
 }
 
-func (m *Model) Lock(ctx context.Context, lockTarget, user string, ttl time.Duration) (bool, string, time.Time, error) {
+func (m *Model) Lock(ctx context.Context, lockTarget, user string, ttl time.Duration) error {
 	isLocked, err := m.redis.SetNX(ctx, lockTarget, user, ttl).Result()
 	if err != nil {
-		return false, "Error: redis.SetNX", time.Now(), err
+		return err
 	}
 
 	remainingTTL, err := m.redis.TTL(ctx, lockTarget).Result()
 	if err != nil {
-		return false, "Error: redis.TTL", time.Now(), err
+		return err
 	}
 
 	expireDate := time.Now().Add(remainingTTL)
@@ -29,13 +29,17 @@ func (m *Model) Lock(ctx context.Context, lockTarget, user string, ttl time.Dura
 	if !isLocked {
 		lockedUser, err := m.redis.Get(ctx, lockTarget).Result()
 		if err != nil {
-			return false, "Error: redis.Get", time.Now(), err
+			return err
 		}
 
-		return user == lockedUser, lockedUser, expireDate, err
+		if user == lockedUser {
+			return fmt.Errorf("%s is already locked. Expire: %s", lockTarget, expireDate)
+		} else {
+			return fmt.Errorf("%s is locked by %s. Expire: %s", lockTarget, user, expireDate)
+		}
 	}
 
-	return true, user, expireDate, nil
+	return nil
 }
 
 func (m *Model) Unlock(ctx context.Context, target string, user string) (bool, string, error) {
