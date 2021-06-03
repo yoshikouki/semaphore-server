@@ -6,7 +6,6 @@ import (
 	"github.com/yoshikouki/semapi/middleware"
 	"github.com/yoshikouki/semapi/model"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -53,32 +52,22 @@ type UnlockParams struct {
 	User   string `json:"user" validate:"required"`
 }
 
-type UnlockResponse struct {
-	GetUnlock string `json:"getUnlock"`
-	Message   string `json:"message"`
-}
-
 func unlock(c echo.Context) error {
 	params := &UnlockParams{}
 	m := c.Get(middleware.ModelKey).(*model.Model)
 	ctx := context.Background()
 
 	if err := c.Bind(&params); err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 	if err := c.Validate(params); err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	err := m.Unlock(ctx, params.Target, params.User)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	res := map[string]string{
-		"getUnlock": strconv.FormatBool(getUnlock),
-		"message":   message,
-	}
-
-	return c.JSON(http.StatusOK, res)
+	return c.String(http.StatusOK, "OK")
 }
