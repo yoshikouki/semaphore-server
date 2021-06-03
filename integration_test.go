@@ -129,36 +129,48 @@ func TestLockAndUnlock(t *testing.T) {
 		User:   "test",
 		TTL:    "1s",
 	})
-	unlockBody := unlockRequest(t, &api.UnlockParams{
+	statusCode, body := unlockRequest(t, &api.UnlockParams{
 		Target: "org-repo-stage",
 		User:   "test",
 	})
 
-	expected := api.UnlockResponse{
-		GetUnlock: "true",
-		Message:   "",
+	expected := testResponse{
+		statusCode: 200,
+		body:       "OK",
 	}
-	var got api.UnlockResponse
-	json.Unmarshal(unlockBody, &got)
-	if got.GetUnlock != expected.GetUnlock || got.Message != expected.Message {
-		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
+	got := testResponse{
+		statusCode: statusCode,
+		body: string(body),
+	}
+
+	if got.statusCode != expected.statusCode {
+		t.Errorf("/unlock returned wrong status code: got %d want %d", got.statusCode, expected.statusCode)
+	}
+	if !strings.Contains(got.body, expected.body) {
+		t.Errorf("/unlock returned wrong body: got %s want %s", got.body, expected.body)
 	}
 }
 
 func TestInvalidUnlock(t *testing.T) {
-	unlockBody := unlockRequest(t, &api.UnlockParams{
+	statusCode, body := unlockRequest(t, &api.UnlockParams{
 		Target: "org-repo-stage",
 		User:   "test",
 	})
 
-	expected := api.UnlockResponse{
-		GetUnlock: "false",
-		Message:   "org-repo-stage haven't locked",
+	expected := testResponse{
+		statusCode: 500,
+		body:       "org-repo-stage haven't locked",
 	}
-	var got api.UnlockResponse
-	json.Unmarshal(unlockBody, &got)
-	if got.GetUnlock != expected.GetUnlock || got.Message != expected.Message {
-		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
+	got := testResponse{
+		statusCode: statusCode,
+		body: string(body),
+	}
+
+	if got.statusCode != expected.statusCode {
+		t.Errorf("/unlock returned wrong status code: got %d want %d", got.statusCode, expected.statusCode)
+	}
+	if !strings.Contains(got.body, expected.body) {
+		t.Errorf("/unlock returned wrong body: got %s want %s", got.body, expected.body)
 	}
 }
 
@@ -168,19 +180,25 @@ func TestLockAndInvalidUnlock(t *testing.T) {
 		User:   "test",
 		TTL:    "1s",
 	})
-	unlockBody := unlockRequest(t, &api.UnlockParams{
+	statusCode, body := unlockRequest(t, &api.UnlockParams{
 		Target: "org-repo-stage",
 		User:   "InvalidUser",
 	})
 
-	expected := api.UnlockResponse{
-		GetUnlock: "false",
-		Message:   "org-repo-stage don't release lock, because lock owner isn't InvalidUser",
+	expected := testResponse{
+		statusCode: 500,
+		body:       "org-repo-stage don't release lock, because lock owner isn't InvalidUser",
 	}
-	var got api.UnlockResponse
-	json.Unmarshal(unlockBody, &got)
-	if got.GetUnlock != expected.GetUnlock || got.Message != expected.Message {
-		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
+	got := testResponse{
+		statusCode: statusCode,
+		body: string(body),
+	}
+
+	if got.statusCode != expected.statusCode {
+		t.Errorf("/unlock returned wrong status code: got %d want %d", got.statusCode, expected.statusCode)
+	}
+	if !strings.Contains(got.body, expected.body) {
+		t.Errorf("/unlock returned wrong body: got %s want %s", got.body, expected.body)
 	}
 }
 
@@ -201,7 +219,7 @@ func lockRequest(t *testing.T, params *api.LockParams) (int, []byte) {
 	return res.StatusCode, body
 }
 
-func unlockRequest(t *testing.T, params *api.UnlockParams) []byte {
+func unlockRequest(t *testing.T, params *api.UnlockParams) (int, []byte) {
 	client := &http.Client{}
 	data, _ := json.Marshal(params)
 
@@ -215,9 +233,5 @@ func unlockRequest(t *testing.T, params *api.UnlockParams) []byte {
 	body, err := ioutil.ReadAll(res.Body)
 	defer res.Body.Close()
 
-	if res.StatusCode != http.StatusOK {
-		t.Errorf("/unlock returned wrong status code: got %d want %d", res.StatusCode, http.StatusOK)
-	}
-
-	return body
+	return res.StatusCode, body
 }
