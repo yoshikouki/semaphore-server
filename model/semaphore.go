@@ -13,7 +13,7 @@ type Semaphore struct {
 	ttl  time.Duration
 }
 
-func (m *Model) LockIfNotExists(ctx context.Context, lockTarget, user string, ttl time.Duration) (bool, string, time.Time, error) {
+func (m *Model) Lock(ctx context.Context, lockTarget, user string, ttl time.Duration) (bool, string, time.Time, error) {
 	isLocked, err := m.redis.SetNX(ctx, lockTarget, user, ttl).Result()
 	if err != nil {
 		return false, "Error: redis.SetNX", time.Now(), err
