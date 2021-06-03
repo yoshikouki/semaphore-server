@@ -27,11 +27,11 @@ func lock(c echo.Context) error {
 	ctx := context.Background()
 
 	if err := c.Bind(&params); err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	if err := c.Validate(params); err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	ttl, err := time.ParseDuration(params.TTL)
