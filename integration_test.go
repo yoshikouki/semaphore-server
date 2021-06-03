@@ -40,9 +40,9 @@ func TestServerConnection(t *testing.T) {
 
 func TestLock(t *testing.T) {
 	body := lockRequest(t, &api.LockParams{
-		LockTarget: "org-repo-stage",
-		User:       "test",
-		TTL:        "1s",
+		Target: "org-repo-stage",
+		User:   "test",
+		TTL:    "1s",
 	})
 
 	expected := api.LockResponse{
@@ -58,14 +58,14 @@ func TestLock(t *testing.T) {
 
 func TestLockAndLock(t *testing.T) {
 	lockRequest(t, &api.LockParams{
-		LockTarget: "org-repo-stage",
-		User:       "test",
-		TTL:        "1s",
+		Target: "org-repo-stage",
+		User:   "test",
+		TTL:    "1s",
 	})
 	body := lockRequest(t, &api.LockParams{
-		LockTarget: "org-repo-stage",
-		User:       "test",
-		TTL:        "1s",
+		Target: "org-repo-stage",
+		User:   "test",
+		TTL:    "1s",
 	})
 
 	expected := api.LockResponse{
@@ -81,14 +81,14 @@ func TestLockAndLock(t *testing.T) {
 
 func TestLockAndInvalidLock(t *testing.T) {
 	lockRequest(t, &api.LockParams{
-		LockTarget: "org-repo-stage",
-		User:       "test",
-		TTL:        "1s",
+		Target: "org-repo-stage",
+		User:   "test",
+		TTL:    "1s",
 	})
 	body := lockRequest(t, &api.LockParams{
-		LockTarget: "org-repo-stage",
-		User:       "InvalidUser",
-		TTL:        "1s",
+		Target: "org-repo-stage",
+		User:   "InvalidUser",
+		TTL:    "1s",
 	})
 
 	expected := api.LockResponse{
@@ -104,13 +104,13 @@ func TestLockAndInvalidLock(t *testing.T) {
 
 func TestLockAndUnlock(t *testing.T) {
 	lockRequest(t, &api.LockParams{
-		LockTarget: "org-repo-stage",
-		User:       "test",
-		TTL:        "1s",
+		Target: "org-repo-stage",
+		User:   "test",
+		TTL:    "1s",
 	})
 	unlockBody := unlockRequest(t, &api.UnlockParams{
-		UnlockTarget: "org-repo-stage",
-		User:         "test",
+		Target: "org-repo-stage",
+		User:   "test",
 	})
 
 	expected := api.UnlockResponse{
@@ -126,8 +126,8 @@ func TestLockAndUnlock(t *testing.T) {
 
 func TestInvalidUnlock(t *testing.T) {
 	unlockBody := unlockRequest(t, &api.UnlockParams{
-		UnlockTarget: "org-repo-stage",
-		User:         "test",
+		Target: "org-repo-stage",
+		User:   "test",
 	})
 
 	expected := api.UnlockResponse{
@@ -143,13 +143,13 @@ func TestInvalidUnlock(t *testing.T) {
 
 func TestLockAndInvalidUnlock(t *testing.T) {
 	lockRequest(t, &api.LockParams{
-		LockTarget: "org-repo-stage",
-		User:       "test",
-		TTL:        "1s",
+		Target: "org-repo-stage",
+		User:   "test",
+		TTL:    "1s",
 	})
 	unlockBody := unlockRequest(t, &api.UnlockParams{
-		UnlockTarget: "org-repo-stage",
-		User:         "InvalidUser",
+		Target: "org-repo-stage",
+		User:   "InvalidUser",
 	})
 
 	expected := api.UnlockResponse{

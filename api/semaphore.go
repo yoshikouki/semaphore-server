@@ -15,9 +15,9 @@ type response struct {
 }
 
 type LockParams struct {
-	LockTarget string `json:"lock_target" validate:"required"`
-	User       string `json:"user" validate:"required"`
-	TTL        string `json:"ttl" validate:"required"`
+	Target string `json:"lock_target" validate:"required"`
+	User   string `json:"user" validate:"required"`
+	TTL    string `json:"ttl" validate:"required"`
 }
 
 type LockResponse struct {
@@ -46,7 +46,7 @@ func lock(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	getLocked, user, expireDate, err := m.LockIfNotExists(ctx, params.LockTarget, params.User, ttl)
+	getLocked, user, expireDate, err := m.LockIfNotExists(ctx, params.Target, params.User, ttl)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -61,8 +61,8 @@ func lock(c echo.Context) error {
 }
 
 type UnlockParams struct {
-	UnlockTarget string `json:"unlock_target" validate:"required"`
-	User         string `json:"user" validate:"required"`
+	Target string `json:"unlock_target" validate:"required"`
+	User   string `json:"user" validate:"required"`
 }
 
 type UnlockResponse struct {
@@ -82,7 +82,7 @@ func unlock(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	getUnlock, message, err := m.Unlock(ctx, params.UnlockTarget, params.User)
+	getUnlock, message, err := m.Unlock(ctx, params.Target, params.User)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
