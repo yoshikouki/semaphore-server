@@ -10,7 +10,7 @@ import (
 
 func DefineEndpoints(e *echo.Echo) {
 	e.GET("/semapi/health-check", healthCheck)
-	e.POST("/semapi/lock", lockIfNotExists)
+	e.POST("/semapi/lock", lock)
 	e.POST("/semapi/unlock", unlock)
 }
 

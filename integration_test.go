@@ -39,17 +39,17 @@ func TestServerConnection(t *testing.T) {
 }
 
 func TestLock(t *testing.T) {
-	body := lockRequest(t, &api.LockIfNotExistsParams{
+	body := lockRequest(t, &api.LockParams{
 		LockTarget: "org-repo-stage",
 		User:       "test",
 		TTL:        "1s",
 	})
 
-	expected := api.LockIfNotExistsResponse{
+	expected := api.LockResponse{
 		GetLocked: "true",
 		User:      "test",
 	}
-	var got api.LockIfNotExistsResponse
+	var got api.LockResponse
 	json.Unmarshal(body, &got)
 	if got.GetLocked != expected.GetLocked || got.User != expected.User {
 		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
@@ -57,22 +57,22 @@ func TestLock(t *testing.T) {
 }
 
 func TestLockAndLock(t *testing.T) {
-	lockRequest(t, &api.LockIfNotExistsParams{
+	lockRequest(t, &api.LockParams{
 		LockTarget: "org-repo-stage",
 		User:       "test",
 		TTL:        "1s",
 	})
-	body := lockRequest(t, &api.LockIfNotExistsParams{
+	body := lockRequest(t, &api.LockParams{
 		LockTarget: "org-repo-stage",
 		User:       "test",
 		TTL:        "1s",
 	})
 
-	expected := api.LockIfNotExistsResponse{
+	expected := api.LockResponse{
 		GetLocked: "true",
 		User:      "test",
 	}
-	var got api.LockIfNotExistsResponse
+	var got api.LockResponse
 	json.Unmarshal(body, &got)
 	if got.GetLocked != expected.GetLocked || got.User != expected.User {
 		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
@@ -80,22 +80,22 @@ func TestLockAndLock(t *testing.T) {
 }
 
 func TestLockAndInvalidLock(t *testing.T) {
-	lockRequest(t, &api.LockIfNotExistsParams{
+	lockRequest(t, &api.LockParams{
 		LockTarget: "org-repo-stage",
 		User:       "test",
 		TTL:        "1s",
 	})
-	body := lockRequest(t, &api.LockIfNotExistsParams{
+	body := lockRequest(t, &api.LockParams{
 		LockTarget: "org-repo-stage",
 		User:       "InvalidUser",
 		TTL:        "1s",
 	})
 
-	expected := api.LockIfNotExistsResponse{
+	expected := api.LockResponse{
 		GetLocked: "false",
 		User:      "test",
 	}
-	var got api.LockIfNotExistsResponse
+	var got api.LockResponse
 	json.Unmarshal(body, &got)
 	if got.GetLocked != expected.GetLocked || got.User != expected.User {
 		t.Errorf("/lock returned wrong body: got %s want %s", got, expected)
@@ -103,7 +103,7 @@ func TestLockAndInvalidLock(t *testing.T) {
 }
 
 func TestLockAndUnlock(t *testing.T) {
-	lockRequest(t, &api.LockIfNotExistsParams{
+	lockRequest(t, &api.LockParams{
 		LockTarget: "org-repo-stage",
 		User:       "test",
 		TTL:        "1s",
@@ -142,7 +142,7 @@ func TestInvalidUnlock(t *testing.T) {
 }
 
 func TestLockAndInvalidUnlock(t *testing.T) {
-	lockRequest(t, &api.LockIfNotExistsParams{
+	lockRequest(t, &api.LockParams{
 		LockTarget: "org-repo-stage",
 		User:       "test",
 		TTL:        "1s",
@@ -163,7 +163,7 @@ func TestLockAndInvalidUnlock(t *testing.T) {
 	}
 }
 
-func lockRequest(t *testing.T, params *api.LockIfNotExistsParams) []byte {
+func lockRequest(t *testing.T, params *api.LockParams) []byte {
 	client := &http.Client{}
 	data, _ := json.Marshal(params)
 

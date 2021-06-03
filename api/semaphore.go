@@ -14,22 +14,22 @@ type response struct {
 	message string
 }
 
-type LockIfNotExistsParams struct {
+type LockParams struct {
 	LockTarget string `json:"lock_target" validate:"required"`
 	User       string `json:"user" validate:"required"`
 	TTL        string `json:"ttl" validate:"required"`
 }
 
-type LockIfNotExistsResponse struct {
+type LockResponse struct {
 	GetLocked  string `json:"getLocked"`
 	User       string `json:"user"`
 	ExpireDate string `json:"expireDate"`
 }
 
-// lockIfNotExists is Mutex what can only be used to maintain atomicity, if key don't exists.
+// lock is Mutex what can only be used to maintain atomicity, if key don't exists.
 // key: `org-repo-stage`
-func lockIfNotExists(c echo.Context) error {
-	params := LockIfNotExistsParams{}
+func lock(c echo.Context) error {
+	params := LockParams{}
 	m := c.Get(middleware.ModelKey).(*model.Model)
 	ctx := context.Background()
 
