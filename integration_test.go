@@ -58,7 +58,7 @@ func TestLock(t *testing.T) {
 	}
 	got := testResponse{
 		statusCode: statusCode,
-		body: string(body),
+		body:       string(body),
 	}
 	if got.statusCode != expected.statusCode {
 		t.Errorf("/lock returned wrong status code: got %d want %d", got.statusCode, expected.statusCode)
@@ -86,7 +86,7 @@ func TestLockAndLock(t *testing.T) {
 	}
 	got := testResponse{
 		statusCode: statusCode,
-		body: string(body),
+		body:       string(body),
 	}
 	if got.statusCode != expected.statusCode {
 		t.Errorf("/lock returned wrong status code: got %d want %d", got.statusCode, expected.statusCode)
@@ -114,7 +114,7 @@ func TestLockAndInvalidLock(t *testing.T) {
 	}
 	got := testResponse{
 		statusCode: statusCode,
-		body: string(body),
+		body:       string(body),
 	}
 	if got.statusCode != expected.statusCode {
 		t.Errorf("/lock returned wrong status code: got %d want %d", got.statusCode, expected.statusCode)
@@ -141,7 +141,7 @@ func TestLockAndUnlock(t *testing.T) {
 	}
 	got := testResponse{
 		statusCode: statusCode,
-		body: string(body),
+		body:       string(body),
 	}
 
 	if got.statusCode != expected.statusCode {
@@ -164,7 +164,7 @@ func TestInvalidUnlock(t *testing.T) {
 	}
 	got := testResponse{
 		statusCode: statusCode,
-		body: string(body),
+		body:       string(body),
 	}
 
 	if got.statusCode != expected.statusCode {
@@ -192,7 +192,7 @@ func TestLockAndInvalidUnlock(t *testing.T) {
 	}
 	got := testResponse{
 		statusCode: statusCode,
-		body: string(body),
+		body:       string(body),
 	}
 
 	if got.statusCode != expected.statusCode {
