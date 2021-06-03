@@ -42,22 +42,22 @@ func (m *Model) Lock(ctx context.Context, lockTarget, user string, ttl time.Dura
 	return nil
 }
 
-func (m *Model) Unlock(ctx context.Context, target string, user string) (bool, string, error) {
+func (m *Model) Unlock(ctx context.Context, target string, user string) error {
 	lockedUser, err := m.redis.Get(ctx, target).Result()
 	if err == redis.Nil {
-		return false, fmt.Sprintf("%s haven't locked", target), nil
+		return fmt.Errorf("%s haven't locked", target)
 	} else if err != nil {
-		return false, "Error: redis.Get", err
+		return err
 	}
 
 	if user != lockedUser {
-		return false, fmt.Sprintf("%s don't release lock, because lock owner isn't %s", target, user), nil
+		return fmt.Errorf("%s don't release lock, because lock owner isn't %s", target, user)
 	}
 
 	_, err = m.redis.Del(ctx, target).Result()
 	if err != nil {
-		return false, "Error: redis.Del", err
+		return err
 	}
 
-	return true, "", nil
+	return nil
 }

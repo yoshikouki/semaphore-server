@@ -70,7 +70,7 @@ func unlock(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	getUnlock, message, err := m.Unlock(ctx, params.Target, params.User)
+	err := m.Unlock(ctx, params.Target, params.User)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
